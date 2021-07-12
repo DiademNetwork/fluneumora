@@ -1,0 +1,298 @@
+// moralis-admin-cli watch-cloud-file --moralisApiKey wUInavjqp6bcCkn --moralisApiSecret LF7LQfqfBcmO7WL --moralisSubdomain kbrz0qn8lfje.moralis.io --moralisCloudFile ./cloud
+
+// Moralis.Cloud.beforeSave("ItemsForSale", async (request) => {
+  
+//     const query = new Moralis.Query("NFTTokenOwners");
+//     query.equalTo("token_address", request.object.get('tokenAddress'));
+//     query.equalTo("token_id", request.object.get('tokenId'));
+//     const object = await query.first();
+//     if (object){
+//         const owner = object.attributes.owner_of;
+//       const userQuery = new Moralis.Query(Moralis.User);
+//         userQuery.equalTo("accounts", owner);
+//       const userObject = await userQuery.first({useMasterKey:true});
+//       if (userObject){
+//           request.object.set('user', userObject);
+//       }
+//       request.object.set('token', object);
+//     }
+//   });
+  
+// Moralis.Cloud.afterSave("MaticTokenTransfers", async function (request) {
+//   const WalletTransaction = Moralis.Object.extend("WalletTransaction");
+
+//   record.set("from_address", request.object.get('from_address'));
+
+//   return record.save();
+// });
+
+// @@@ Paste this code into the Moralis Cloud Functions section on the server @@@
+// Moralis.Cloud.afterSave("MaticTokenTransfers", async function (request) {
+//   // sum the total volume in the last hour
+//   const query = new Moralis.Query("DaiWethMaticTokenTransfersSwaps");
+//   const end = new Date();
+//   const start = new Date(end.valueOf() - 3600000); // 1 hour ago
+//   const pipeline = [
+//     {match: {block_timestamp: {$gt: start}}},
+//     // convert text values into numbers so they can be summed
+//     {addFields:{
+//       nAmount0In: {$toDouble: "$amount0In"},
+//       nAmount1In: {$toDouble: "$amount1In"},
+//       nAmount0Out: {$toDouble: "$amount0Out"},
+//       nAmount1Out: {$toDouble: "$amount1Out"},
+//     }},
+//     {
+//       group: {
+//         objectId: null,
+//         totalAmount0In: {$sum: "$nAmount0In"},
+//         totalAmount1In: {$sum: "$nAmount1In"},
+//         totalAmount0Out: {$sum: "$nAmount0Out"},
+//         totalAmount1Out: {$sum: "$nAmount1Out"},
+//       }
+//     },
+//     // convert wei into ETH
+//     {project: {
+//       dTotalAmount0In: {$divide: ["$totalAmount0In", 1e18]},
+//       dTotalAmount1In: {$divide: ["$totalAmount1In", 1e18]},
+//       dTotalAmount0Out: {$divide: ["$totalAmount0Out", 1e18]},
+//       dTotalAmount1Out: {$divide: ["$totalAmount1Out", 1e18]},
+//     }},
+//   ];
+//   const results = await query.aggregate(pipeline, {useMasterKey: true});
+//   const data = results[0];
+
+//   // save results to separate collection
+//   const DaiWethSwapVolume60 = Moralis.Object.extend("DaiWethSwapVolume60");
+//   const vol = new DaiWethSwapVolume60();
+//   vol.set("date_time", end);
+//   vol.set("amount0In", data.dTotalAmount0In);
+//   vol.set("amount1In", data.dTotalAmount1In);
+//   vol.set("amount0Out", data.dTotalAmount0Out);
+//   vol.set("amount1Out", data.dTotalAmount1Out);
+  
+//   return vol.save();
+
+//   // lastAverageUpdate = end;
+
+// });
+
+  // Moralis.Cloud.define("testing", async (request) => {
+  //   const LogsObject = Moralis.Object.extends("Logs");
+
+  //   const logsRow = new LogsObject();
+
+  //   var now = new Date();
+  //   var logs = `${now.getMinutes()} ${now.getSeconds()}`
+    
+  //   logsRow.set("data", logs);
+
+  //   logsRow.save();
+    
+  //   // request.object.set('logs', logsRow);    
+  // })
+
+  // Moralis.Cloud.beforeSave(Moralis.User, async (request) => {
+  //   var username = request.object.get("username")
+
+  //   request.object.set('address', username)
+
+  //   request.object.set('ethAddress', username)
+
+  //   request.object.set('accounts', [username])
+
+  //   request.object.set('fullname', "testing")
+  // })
+  
+
+  // Moralis.Cloud.afterSave("MaticNFTTransfers", async (request) => {
+
+  // UPDATE TOKEN DETAILS FOUND BY TRANSACTION HASH
+
+  //   var emptyAddress = "0x0000000000000000000000000000000000000000"
+  
+  //   var isMintTransaction = request.object.get('from_address') == emptyAddress
+
+  //   if (isMintTransaction) {
+  //     // var TokenDetailsObject = Moralis.Object.extend("TokenDetails")
+
+  //     // var tokenDetails = new TokenDetailsObject()
+
+  //     var creatorAddress = request.object.get("to_address").toLowerCase()
+
+  //     var tokenId = Number.parseInt(request.object.get("token_id"))
+
+  //     // var tokenSupply = Number.parseInt(request.object.get("amount"))
+
+  //     // await tokenDetails.save();
+
+  //     var query = new Moralis.Query(Moralis.User)
+
+  //     query.equalTo("address", creatorAddress)
+
+  //     var user = await query.first({useMasterKey:true})
+
+  //     if (user.tokens instanceof Array) {
+  //       user.set("tokens", [...user.tokens, tokenId])
+  //     } else {
+  //       user.set("tokens", [tokenId])
+  //     }
+
+  //     // await user.save({ useMasterKey: true })
+  //   }
+  // })
+
+  // Moralis.Cloud.beforeSave("MaticNFTTransfers", async (request) => {
+
+  //   // var emptyAddress = '0x0000000000000000000000000000000000000000';
+
+  //   // var isMintTransaction = request.object.get('from_address') == emptyAddress;
+
+  //   // if (isMintTransaction) {
+  //   //   var TokenDetailsObject = Moralis.Object.extend("TokenDetails");
+
+  //   //   var tokenDetails = new TokenDetailsObject();
+
+  //   //   var creatorAddress = request.object.get("to_address").toLowerCase()
+
+  //   //   var tokenId = Number.parseInt(request.object.get("token_id"));
+
+  //   //   var amount = Number.parseInt(request.object.get("amount"));
+
+  //   //   var tokenName = "NONAME";
+
+  //   //   tokenDetails.set("token_id", tokenId);
+  //   //   tokenDetails.set("token_name", ""); // setup on client side
+  //   //   tokenDetails.set("is_new", true);
+  //   //   tokenDetails.set("token_supply", amount);
+  //   //   tokenDetails.set("creator_address", creatorAddress);
+
+  //   //   request.object.set('logs', `${tokenId} - ${tokenName} - ${amount} - ${creatorAddress}`)
+
+  //   //   return tokenDetails.save();
+
+  //     // var TokenEnabledObject = Moralis.Object.extend("TokenEnabled");
+
+  //     // var tokenEnabled = new TokenEnabledObject();
+
+  //     // tokenEnabled.set("address", creatorAddress);
+
+  //     // tokenEnabled.set("token_id", tokenId);
+
+  //     // await tokenEnabled.save();
+
+  //     // var creatorUserQuery = new Moralis.Query(Moralis.User);
+  //     // creatorUserQuery.equalTo("address", creatorAddress);
+      
+  //     // var creatorUser = await creatorUserQuery.first({useMasterKey:true});
+
+  //     // var tokens = [];
+
+  //     // if (creatorUser.attributes.tokens != null && creatorUser.attributes.tokens.length > 0) {
+  //     //   tokens = creator.attributes.tokens;
+  //     // }
+
+  //     // tokens.push(tokenId);
+
+  //     // request.object.set('testingx', `new tokens: ${tokens}`)
+
+  //     // creatorUser.set("username", "superbob");
+
+  //     // try {
+  //     //   await creatorUser.save();
+
+  //     // } catch (err) {
+  //     //   request.object.set('testing', `${err}}`)
+  //     // }
+
+  //     // return true;
+
+  //   // } else {
+  //     // if (isMintTransaction == false) {
+  //     //   const fromAddress = request.object.get('from_address');
+  //     //   const fromUserQuery = new Moralis.Query(Moralis.User);
+  //     //   fromUserQuery.equalTo("address", fromAddress.toLowerCase());
+    
+  //     //   const toAddress = request.object.get('to_address');
+  //     //   const toUserQuery = new Moralis.Query(Moralis.User);
+  //     //   toUserQuery.equalTo("address", toAddress);
+    
+  //     //   // const tokenId = request.object.get('token_id');
+  //     //   // const tokenQuery = new Moralis.Query("TokenDetails");
+  //     //   // tokenQuery.equalTo("token_id", tokenId);
+  //     //   // tokenQuery.descending("createdAt");
+    
+  //     //   const fromUser = await fromUserQuery.first({useMasterKey:true});
+  //     //   const toUser = await toUserQuery.first({useMasterKey:true});
+  //     //   // const token = await tokenQuery.first({useMasterKey:true});
+    
+  //     //   request.object.set('from_user', fromUser);
+  //     //   request.object.set('to_user', toUser);
+  //     //   // request.object.set('token', token);          
+  //     // }
+
+  //     // if (fromUser.attributes.tokens.indexOf(tokenId) == -1) {
+  //     //   fromUser.set("tokens", [
+  //     //     ...fromUser.attributes.tokens,
+  //     //     tokenId
+  //     //   ]);
+
+  //     //   await fromUser.save();
+  //     // }
+
+  //     // if (toUser.attributes.tokens.indexOf(tokenId) == -1) {
+  //     //   toUser.set("tokens", [
+  //     //     ...toUser.attributes.tokens,
+  //     //     tokenId
+  //     //   ]);
+
+  //     //   await toUser.save();
+  //     // }
+  //   // }
+  // })
+
+  // Moralis.Cloud.define("getUserList", async function (request) {
+  //   console.log("getUserList");
+
+  //   const query = new Moralis.Query(Moralis.User);
+  //   const results = await query.find({ useMasterKey: true });
+  //   const userAddresses = results.map(function (user) {
+  //     return user.get("ethAddress");
+  //   });
+  
+  //   return userAddresses;
+  // });
+  
+//   Moralis.Cloud.define("getProfileForAddress", async function (request) {
+//     // convert address to lower case to remove any checksum capitalization
+//     const address = request.params.address.toLowerCase();
+//     if (!address) {
+//       return null;
+//     }
+  
+//     // find user
+//     let query = new Moralis.Query(Moralis.User);
+//     query.equalTo("ethAddress", address);
+//     const user = await query.first({ useMasterKey: true });
+//     if (!user) {
+//       return null;
+//     }
+  
+//     // get user posted pics
+//     query = new Moralis.Query("UserImage");
+//     query.equalTo("userId", user.id);
+//     const results = await query.find({ useMasterKey: true });
+//     const pics = results.map(function (r) {
+//       return {
+//         url: r.attributes.img.url(),
+//         name: r.attributes.img.name(),
+//       };
+//     });
+  
+//     // return profile and pics
+//     return {
+//       userId: user.id,
+//       address: user.get("ethAddress"),
+//       pics,
+//     };
+//   });
+  
